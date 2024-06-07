@@ -1,0 +1,26 @@
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'main/css/main.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+          <ul class="nav me-auto">
+            <li class="nav-item"><a href="{% url 'clinic:home' %}" class="nav-link link-dark px-2 active">Главная страница</a></li>
+            <li class="nav-item"><a href="{% url 'clinic:about' %}" class="nav-link link-dark px-2 active">О нас</a></li>
+            <li class="nav-item"><a href="{% url 'clinic:appointment' %}" class="nav-link link-dark px-2 active">Запись к врачу</a></li>
+          </ul>
+          <ul class="nav">
+            <li class="nav-item"><a href="{% url 'users:login' %}" class="nav-link link-dark px-2 active">Вход</a></li>
+            <li class="nav-item"><a href="{% url 'users:registration' %}" class="nav-link link-dark px-2 active">Регистрация</a></li></ul>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</body>
