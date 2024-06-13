@@ -1,1 +1,11 @@
-<h4>Регистрация</h4>
+{% extends 'users/user_base.html' %}
+{% load static %}
+
+{% block content %}
+    <form method="post">
+        <h4>Регистрация</h4>
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Сохранить">
+</form>
+{% endblock %}

@@ -1,6 +1,7 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from utils.mixins import TitleMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 class HomeTemplateView(TitleMixin, TemplateView):
@@ -13,7 +14,7 @@ class AboutUsTemplateView(TitleMixin, TemplateView):
     title = "О нас"
 
 
-# @login_required()
-class AppointmentTemplateView(TitleMixin, TemplateView):
+class AppointmentTemplateView(LoginRequiredMixin, TitleMixin, TemplateView):
     template_name = 'clinic/appointment.html'
     title = 'Запись к врачу'
+
