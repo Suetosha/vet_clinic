@@ -1,0 +1,10 @@
+{% extends 'users/user_base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    {{ form.image.url }}
+    <input type="submit" value="Update">
+</form>
+{% endblock %}

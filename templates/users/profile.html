@@ -1,0 +1,16 @@
+{% extends 'users/user_base.html' %}
+{% load static %}
+
+{% block content %}
+    <h3>Пользователь {{ user.username }}</h3>
+    <h2>Ваши питомцы:</h2>
+    {% for pet in pets %}
+    <div>
+        <a href="{% url 'users:pet_profile' pet.id %}">{{ pet.name }}</a>
+    </div>
+    {% endfor %}
+    <form action="{% url 'users:pet_create' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Добавить питомца</button>
+    </form>
+{% endblock %}

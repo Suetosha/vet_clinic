@@ -1,0 +1,22 @@
+{% extends 'users/user_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<form method="post">
+    <h2>Форма для добавления питомца</h2>
+    {% csrf_token %}
+    {% for field in form %}
+        {{ field.label }}
+    <div>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <input
+        class="btn btn-secondary my-3"
+        type="submit"
+        href="{% url 'users:profile' %}"
+        value="Добавить питомца"
+    />
+</form>
+{% endblock %}
