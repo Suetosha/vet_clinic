@@ -1,10 +1,45 @@
-{% extends 'users/user_base.html' %}
+{% extends 'clinic/base.html' %}
 {% load static %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    {{ form.image.url }}
-    <input type="submit" value="Update">
+
+<div class="d-flex justify-content-end">
+ {% if messages %}
+     {% for message in messages %}
+         <div class="alert alert-success" role="alert">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
+</div>
+
+
+<form method="post" enctype='multipart/form-data'>{% csrf_token %}
+
+    <div class="row">
+        <div class="col-4 mx-auto text-center">
+            <img src="{{ pet.image.url }}" class="img-thumbnail">
+        </div>
+    </div>
+
+
+    <div class="container w-25 p-3">
+
+        {% for field in form %}
+        <h5>{{ field.label }}</h5>
+        <div class="mb-3">{{ field }}</div>
+        {% endfor %}
+
+        <div class="mx-auto p-2" style="width: 200px;">
+            <input class="btn btn-secondary" type="submit" value="Обновить данные">
+        </div>
+
+    </div>
+
+    <div class="mx-auto p-2 " style="width: 200px;">
+        <a class="btn btn-secondary bg-danger"
+           href="{% url 'users:pet_delete' pet.id %}" role="button">Удалить профиль</a>
+    </div>
+
 </form>
 {% endblock %}

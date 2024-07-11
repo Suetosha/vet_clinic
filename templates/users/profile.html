@@ -1,16 +1,38 @@
-{% extends 'users/user_base.html' %}
+{% extends 'clinic/base.html' %}
 {% load static %}
 
 {% block content %}
+
+<div class="d-flex justify-content-end">
+ {% if messages %}
+     {% for message in messages %}
+         <div class="alert alert-success" role="alert">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
+</div>
+
     <h3>Пользователь {{ user.username }}</h3>
     <h2>Ваши питомцы:</h2>
+<div class="d-flex">
     {% for pet in pets %}
-    <div>
-        <a href="{% url 'users:pet_profile' pet.id %}">{{ pet.name }}</a>
-    </div>
+        <div class="card" style="width: 18rem;">
+          <img src="{{ pet.image.url }}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ pet.name }}</h5>
+            <p class="card-text"></p>
+            <a href="{% url 'users:pet_profile' pet.id %}" class="btn btn-outline-primary">Перейти в профиль</a>
+          </div>
+        </div>
     {% endfor %}
+</div>
+
+<div class="mx-auto p-3">
     <form action="{% url 'users:pet_create' %}" method="post">
         {% csrf_token %}
-        <button type="submit">Добавить питомца</button>
+        <button class="btn btn-primary" type="submit">Добавить питомца</button>
     </form>
+</div>
+
 {% endblock %}

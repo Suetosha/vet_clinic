@@ -1,11 +1,13 @@
-{% extends 'users/user_base.html' %}
+{% extends 'clinic/base.html' %}
 {% load static %}
 
 {% block content %}
-    <form method="post">
+<form method="post">
+    <div class="container w-25 p-3">
         <h4>Регистрация</h4>
         {% csrf_token %}
         {{ form.as_p }}
-    <input type="submit" value="Сохранить">
+        <input class='btn btn-primary' type="submit" value="Сохранить">
+    </div>
 </form>
 {% endblock %}

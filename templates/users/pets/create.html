@@ -1,22 +1,29 @@
-{% extends 'users/user_base.html' %}
+{% extends 'clinic/base.html' %}
 {% load static %}
 
 {% block content %}
 
-<form method="post">
-    <h2>Форма для добавления питомца</h2>
-    {% csrf_token %}
-    {% for field in form %}
-        {{ field.label }}
-    <div>
-        {{ field }}
+<form method="post" enctype="multipart/form-data">
+    <div class="container w-25 p-3" >
+
+        <h2>Форма для добавления питомца</h2>
+        {% csrf_token %}
+        {% for field in form %}
+            {{ field.label }}
+        <div class="mb-3">
+            {{ field }}
+        </div>
+        {% endfor %}
+
+        <div class="mx-auto p-2" style="width: 200px;">
+            <input
+                class="btn btn-secondary my-3"
+                type="submit"
+                href="{% url 'users:profile' %}"
+                value="Добавить питомца"
+            />
+        </div>
     </div>
-    {% endfor %}
-    <input
-        class="btn btn-secondary my-3"
-        type="submit"
-        href="{% url 'users:profile' %}"
-        value="Добавить питомца"
-    />
+
 </form>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'users/user_base.html' %}
+{% extends 'clinic/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -23,6 +23,7 @@
         <a class="btn btn-secondary" href="{% url 'users:registration' %}" role="button">Зарегистрироваться</a>
       </div>
     </div>
+
      {% if messages %}
          {% for message in messages %}
              <div class="text-center alert alert-{{ message.tags }}">
@@ -32,10 +33,5 @@
      {% endif %}
   </header>
 </section>
-
-
-
-
-
 
 {% endblock %}
