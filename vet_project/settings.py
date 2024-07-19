@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'vet_apps.clinic',
-    'vet_apps.users'
+    'vet_apps.users',
 ]
 
 MIDDLEWARE = [

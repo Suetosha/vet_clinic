@@ -14,7 +14,7 @@
           <ul class="nav me-auto">
             <li class="nav-item"><a href="{% url 'clinic:home' %}" class="nav-link link-dark px-2 active">Главная страница</a></li>
             <li class="nav-item"><a href="{% url 'clinic:about' %}" class="nav-link link-dark px-2 active">О нас</a></li>
-            {% if user.type == 'OWNER' or not user.is_authenticated %}
+            {% if request.user|has_group:"Owner" %}
             <li class="nav-item"><a href="{% url 'clinic:appointment' %}" class="nav-link link-dark px-2 active">Запись к врачу</a></li>
             {% endif %}
           </ul>

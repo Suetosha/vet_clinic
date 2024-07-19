@@ -19,7 +19,6 @@ class UserLoginView(TitleMixin, LoginView):
     title = 'Авторизация'
 
 
-
 class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     template_name = 'users/registration.html'
     form_class = UserRegistrationForm
@@ -44,6 +43,11 @@ class UserProfileView(TitleMixin, GroupRequiredMixin, TemplateView):
     template_name = 'users/profile.html'
     title = 'Профиль'
     model = User
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['pets'] = Pet.objects.filter(user_id=request.user)
+        return self.render_to_response(context)
 
 
 class DoctorProfileView(TitleMixin, GroupRequiredMixin, TemplateView):

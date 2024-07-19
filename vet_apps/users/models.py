@@ -10,6 +10,8 @@ class Pet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to="media/", default="pet_default.png")
 
+    objects = models.Manager()
+
 
 
 

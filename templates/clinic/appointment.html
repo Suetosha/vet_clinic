@@ -2,4 +2,10 @@
 
 {% block content %}
     <h4>Запись к врачу</h4>
+    <form method="post">
+        {% csrf_token %}
+        <h4>Пользователь {{ user.username }}</h4>
+        {{ form.as_p }}
+        <input class='btn btn-primary' type="submit" value="Продолжить">
+    </form>
 {% endblock %}
