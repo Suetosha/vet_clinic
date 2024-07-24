@@ -44,10 +44,10 @@ class PetRegistrationForm(ModelForm):
     age = forms.IntegerField(label='Возраст', initial=1, widget=forms.NumberInput(attrs={
         'class': "form-control", 'placeholder': "Введите возраст питомца"}))
 
-    image = forms.ImageField(label='Фото', required=False, widget=FileInput(attrs={'class': 'form-control'}))
+    photo = forms.ImageField(label='Фото', required=False, widget=FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Pet
-        fields = ('name', 'pet_type', 'breed', 'age', 'image')
+        fields = ('name', 'pet_type', 'breed', 'age', 'photo')
 
 

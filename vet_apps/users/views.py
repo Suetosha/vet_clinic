@@ -4,10 +4,11 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from utils.mixins import TitleMixin, GroupRequiredMixin
+from vet_apps.clinic.models import Appointment
 
 from vet_apps.users.forms import UserLoginForm, UserRegistrationForm, PetRegistrationForm
 from vet_apps.users.models import Pet
@@ -46,7 +47,10 @@ class UserProfileView(TitleMixin, GroupRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        context['pets'] = Pet.objects.filter(user_id=request.user)
+        pets = Pet.objects.filter(user_id=request.user)
+        appointments = Appointment.objects.filter(pet_id__in=[pet.id for pet in pets])
+        context['pets'] = pets
+        context['appointments'] = appointments
         return self.render_to_response(context)
 
 

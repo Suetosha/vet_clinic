@@ -1,9 +1,11 @@
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, ListView
 from utils.mixins import TitleMixin
 from .forms import AppointmentForm, SlotForm
 from .models import Appointment
@@ -41,7 +43,7 @@ class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
             return HttpResponseRedirect(reverse('clinic:appointment_slots'))
 
 
-class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, CreateView):
+class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageMixin, CreateView):
     template_name = 'clinic/appointment_slots.html'
     title = 'Запись на прием - выберите время'
     form_class = SlotForm
@@ -55,9 +57,9 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, CreateView):
             app = Appointment(
                 date_time=date_time,
                 doctor=User.objects.get(id=request.session['doctor_id']),
-                user=request.user,
                 pet=Pet.objects.get(id=request.session['pet_id'])
             )
 
             app.save()
-            return HttpResponseRedirect(reverse('clinic:home'))
+            messages.success(request, 'Вы успешно записались на прием')
+            return HttpResponseRedirect(reverse('users:profile'))
