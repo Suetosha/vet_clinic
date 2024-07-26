@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.forms import ModelForm, fields
 from django import forms
 
-from vet_apps.clinic.models import Appointment
+from vet_apps.clinic.models import Appointment, Slot
 from vet_apps.users.models import Pet
 
 
@@ -23,9 +25,15 @@ class AppointmentForm(ModelForm):
 
 
 class SlotForm(ModelForm):
-    time = forms.ChoiceField(label='Время', choices=[('17:00', '17:00'), ('15:30', '15:30'), ('16:00', '16:00')])
+    def __init__(self, *args, **kwargs):
+        doctor_id = kwargs.pop('doctor_id', None)
+        free_slots = kwargs.pop('free_slots', None)
+        super(SlotForm, self).__init__()
+
+        if doctor_id:
+            self.fields['time'] = forms.ChoiceField(label='Время', choices=[(slot, slot) for slot in free_slots])
 
     class Meta:
-        model = Appointment
+        model = Slot
         fields = ('time',)
 

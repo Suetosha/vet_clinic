@@ -10,3 +10,11 @@ class Appointment(models.Model):
 
     objects = models.Manager()
 
+
+class Slot(models.Model):
+    doctor = models.ForeignKey(User, on_delete=models.CASCADE)
+    time = models.TimeField()
+
+    objects = models.Manager()
+
+

@@ -1,6 +1,16 @@
 {% extends 'clinic/base.html' %}
 
 {% block content %}
+    <div class="d-flex justify-content-end">
+     {% if messages %}
+         {% for message in messages %}
+             <div class="alert alert-danger" role="alert">
+                 {{ message|safe }}
+             </div>
+         {% endfor %}
+     {% endif %}
+    </div>
+
     <h4>Запись к врачу</h4>
     <form method="post">
         {% csrf_token %}

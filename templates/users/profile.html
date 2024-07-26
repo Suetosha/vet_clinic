@@ -13,46 +13,53 @@
  {% endif %}
 </div>
 
-    <h3>Пользователь {{ user.username }}</h3>
-    <h2>Ваши питомцы:</h2>
-<div class="d-flex">
-    {% for pet in pets %}
-        <div class="card" style="width: 18rem;">
-          <img src="{{ pet.photo.url }}" class="card-img-top" alt="pet_photo">
-          <div class="card-body">
-            <h5 class="card-title">{{ pet.name }}</h5>
-            <p class="card-text"></p>
-            <a href="{% url 'users:pet_profile' pet.id %}" class="btn btn-outline-primary">Перейти в профиль</a>
-          </div>
-        </div>
-    {% endfor %}
+
+<div class="container text-center">
+    <div class="row mt-5">
+        {% if appointments %}
+            <h3>Записи на прием</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th>Питомец</th>
+                      <th>Врач</th>
+                      <th>Время</th>
+                    </tr>
+                </thead>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.pet.name }}</td>
+                        <td>{{ appointment.doctor.username }}</td>
+                        <td>{{ appointment.date_time }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+
+    <div class="row mt-5">
+
+        <h2>Ваши питомцы:</h2>
+        {% if pets %}
+            {% for pet in pets %}
+                <div class="card" style="width: 18rem;">
+                  <img src="{{ pet.photo.url }}" class="card-img-top" alt="pet_photo">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ pet.name }}</h5>
+                    <p class="card-text"></p>
+                    <a href="{% url 'users:pet_profile' pet.id %}" class="btn btn-outline-primary">Перейти в профиль</a>
+                  </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="row mt-5">
+        <form action="{% url 'users:pet_create' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit">Добавить питомца</button>
+        </form>
+    </div>
 </div>
 
-<div class="mx-auto p-3">
-    <form action="{% url 'users:pet_create' %}" method="post">
-        {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Добавить питомца</button>
-    </form>
-</div>
-
-
-
-<div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-              <th>Питомец</th>
-              <th>Врач</th>
-              <th>Время</th>
-            </tr>
-        </thead>
-        {% for appointment in appointments %}
-        <tr>
-            <td>{{ appointment.pet.name }}</td>
-            <td>{{ appointment.doctor.username }}</td>
-            <td>{{ appointment.date_time }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
 {% endblock %}
