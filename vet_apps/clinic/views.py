@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -6,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView
 from utils.mixins import TitleMixin
 from .forms import AppointmentForm, SlotForm
 from .models import Appointment, Slot
@@ -37,10 +36,10 @@ class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = AppointmentForm(request.POST)
-        if form.is_valid():
 
+        if form.is_valid():
             request.session['pet_id'] = form.cleaned_data['pet'].id
-            request.session['doctor_id'] = form.cleaned_data['doctor'].id
+            request.session['doctor_id'] = form.cleaned_data['doctor']
             request.session['date'] = form.cleaned_data['date'].strftime('%Y-%m-%d')
             free_slots = get_free_slots(request.session['date'], request.session['doctor_id'])
 
@@ -61,7 +60,6 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageM
     def get_form_kwargs(self):
         kwargs = super(AppointmentSlotsCreateView, self).get_form_kwargs()
         kwargs['doctor_id'] = self.request.session['doctor_id']
-        kwargs['date'] = self.request.session['date']
         free_slots = self.request.session['free_slots']
 
         if free_slots:
@@ -70,15 +68,16 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageM
 
     def post(self, request, *args, **kwargs):
         form = SlotForm(request.POST)
+
         if form.is_valid():
-            date, time = datetime.strptime(request.session['date'], "%Y-%m-%d"), form.cleaned_data['time']
-            date_time = datetime.combine(date, time)
 
             appointment = Appointment(
-                date_time=date_time,
-                doctor=User.objects.get(id=request.session['doctor_id']),
+                slot=Slot.objects.get(time=form.cleaned_data['time'],
+                                      doctor=User.objects.get(id=request.session['doctor_id'])),
+
+                date=request.session['date'],
                 pet=Pet.objects.get(id=request.session['pet_id'])
-            )
+                )
 
             appointment.save()
             messages.success(request, 'Вы успешно записались на прием')
@@ -87,18 +86,12 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageM
 
 def get_free_slots(selected_date, doctor_id):
     selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
-    all_times = [time for time in Slot.objects.filter(doctor=doctor_id)
-                                              .values_list('time', flat=True)]
 
-    closed_slots = [app for app in Appointment.objects.filter(doctor=doctor_id)
-                                                      .values_list('date_time', flat=True)]
+    closed_slots = [app for app in Appointment.objects.filter(slot__doctor=doctor_id, date=selected_date)
+                                                      .values_list('slot__time', flat=True)]
 
-    filtered_closed_slots = list(filter(lambda dt: dt.date() == selected_date, closed_slots))
-    closed_time = list(map(lambda dt: dt.time(), filtered_closed_slots))
-    free_slots = []
-
-    for time in all_times:
-        if time not in closed_time:
-            free_slots.append(time)
+    free_slots = [time for time in Slot.objects.filter(doctor=doctor_id)
+                                               .exclude(time__in=closed_slots)
+                                               .values_list('time', flat=True)]
 
     return free_slots

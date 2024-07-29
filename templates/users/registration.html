@@ -2,12 +2,25 @@
 {% load static %}
 
 {% block content %}
-<form method="post">
-    <div class="container w-25 p-3">
-        <h4>Регистрация</h4>
+
+<div class="container mt-5 col-md-3">
+    <form method="post">
+        <div class="row text-center">
+            <h4>Регистрация</h4>
+        </div>
         {% csrf_token %}
-        {{ form.as_p }}
-        <input class='btn btn-primary' type="submit" value="Сохранить">
-    </div>
-</form>
+
+        {% for field in form %}
+            {{ field.label }}
+            <div class="mt-1 mb-2">
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <div class="text-center mt-4">
+            <input class='btn btn-primary' type="submit" value="Сохранить">
+        </div>
+    </form>
+</div>
+
 {% endblock %}

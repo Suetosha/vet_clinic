@@ -1,21 +1,39 @@
 {% extends 'clinic/base.html' %}
 
 {% block content %}
-    <div class="d-flex justify-content-end">
-     {% if messages %}
-         {% for message in messages %}
-             <div class="alert alert-danger" role="alert">
-                 {{ message|safe }}
-             </div>
-         {% endfor %}
-     {% endif %}
+
+
+<div class="container mt-5 col-md-5">
+
+     <div class="row">
+         {% if messages %}
+             {% for message in messages %}
+                 <div class="alert alert-danger" role="alert">
+                     {{ message|safe }}
+                 </div>
+             {% endfor %}
+         {% endif %}
+     </div>
+
+    <div class="row text-center">
+        <h4>Запись к врачу</h4>
     </div>
 
-    <h4>Запись к врачу</h4>
-    <form method="post">
-        {% csrf_token %}
-        <h4>Пользователь {{ user.username }}</h4>
-        {{ form.as_p }}
-        <input class='btn btn-primary' type="submit" value="Продолжить">
-    </form>
+
+    <div class="row mt-3">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                {{ field.label }}
+                <div class="mt-1 mb-2">
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <div class="text-center mt-5">
+                <input class='btn btn-primary' type="submit" value="Продолжить">
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

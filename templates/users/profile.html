@@ -23,16 +23,20 @@
                     <tr>
                       <th>Питомец</th>
                       <th>Врач</th>
+                      <th>Дата</th>
                       <th>Время</th>
                     </tr>
                 </thead>
-                {% for appointment in appointments %}
-                    <tr>
-                        <td>{{ appointment.pet.name }}</td>
-                        <td>{{ appointment.doctor.username }}</td>
-                        <td>{{ appointment.date_time }}</td>
-                    </tr>
-                {% endfor %}
+                <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.pet.name }}</td>
+                            <td>{{ appointment.slot.doctor.username }}</td>
+                            <td>{{ appointment.date }}</td>
+                            <td>{{ appointment.slot.time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         {% endif %}
     </div>

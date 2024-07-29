@@ -3,35 +3,37 @@
 
 {% block content %}
 
-<section class="h-100">
-  <header class="container h-100">
-    <div class="d-flex align-items-center justify-content-center h-100">
-      <div class="d-flex flex-column">
-        <form method="post">
-            {% csrf_token %}
-            <h3>Авторизация</h3>
-            <div class="mb-3">
-                {{ form.as_p }}
-            </div>
-            <input
-            class="btn btn-secondary my-3"
-            type="submit"
-            href="{% url 'users:login' %}"
-            value="Войти"
-            />
-        </form>
+<div class="container mt-5 col-md-3">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row text-center">
+            <h4>Авторизация</h4>
+        </div>
+
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+
+        <div class="text-center mt-5">
+            <input class='btn btn-primary' type="submit" href="{% url 'users:login' %}" value="Продолжить">
+        </div>
+    </form>
+
+    <div class="text-center mt-5">
         <a class="btn btn-secondary" href="{% url 'users:registration' %}" role="button">Зарегистрироваться</a>
-      </div>
     </div>
 
-     {% if messages %}
-         {% for message in messages %}
-             <div class="text-center alert alert-{{ message.tags }}">
-                 {{ message|safe }}
-             </div>
-         {% endfor %}
-     {% endif %}
-  </header>
-</section>
+  </div>
+
+ {% if messages %}
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
+
+
 
 {% endblock %}
