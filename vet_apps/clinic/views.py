@@ -1,7 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -10,7 +9,7 @@ from utils.mixins import TitleMixin
 from .forms import AppointmentForm, SlotForm
 from .models import Appointment, Slot
 
-from ..users.models import Pet
+from ..users.models import Pet, CustomUser
 
 
 class HomeTemplateView(TitleMixin, TemplateView):
@@ -18,16 +17,32 @@ class HomeTemplateView(TitleMixin, TemplateView):
     title = "Главная страница"
 
 
-class AboutUsTemplateView(TitleMixin, TemplateView):
-    template_name = "clinic/about.html"
+class DoctorsTemplateView(TitleMixin, TemplateView):
+    template_name = "clinic/doctors.html"
     title = "О нас"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DoctorsTemplateView, self).get_context_data(*args, **kwargs)
+        context['doctors'] = [doctor for doctor in CustomUser.objects.filter(groups__name='Doctor')]
+        return context
+
+
+class DoctorInfoTemplateView(TitleMixin, TemplateView):
+    template_name = "clinic/doctor_info.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DoctorInfoTemplateView, self).get_context_data(*args, **kwargs)
+        doctor = CustomUser.objects.get(id=kwargs['pk'])
+        context['doctor'] = doctor
+        context['title'] = f'{doctor.first_name} {doctor.last_name}'
+        return context
 
 
 class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
     template_name = 'clinic/appointment.html'
     title = 'Запись на прием'
     form_class = AppointmentForm
-    model = Appointment, User
+    model = Appointment, CustomUser
 
     def get_form_kwargs(self):
         kwargs = super(AppointmentCreateView, self).get_form_kwargs()
@@ -41,6 +56,7 @@ class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
             request.session['pet_id'] = form.cleaned_data['pet'].id
             request.session['doctor_id'] = form.cleaned_data['doctor']
             request.session['date'] = form.cleaned_data['date'].strftime('%Y-%m-%d')
+            request.session['description'] = form.cleaned_data['description']
             free_slots = get_free_slots(request.session['date'], request.session['doctor_id'])
 
             if free_slots:
@@ -55,7 +71,7 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageM
     template_name = 'clinic/appointment_slots.html'
     title = 'Запись на прием - выберите время'
     form_class = SlotForm
-    model = Appointment,  User
+    model = Appointment,  CustomUser
 
     def get_form_kwargs(self):
         kwargs = super(AppointmentSlotsCreateView, self).get_form_kwargs()
@@ -73,10 +89,11 @@ class AppointmentSlotsCreateView(LoginRequiredMixin, TitleMixin, SuccessMessageM
 
             appointment = Appointment(
                 slot=Slot.objects.get(time=form.cleaned_data['time'],
-                                      doctor=User.objects.get(id=request.session['doctor_id'])),
+                                      doctor=CustomUser.objects.get(id=request.session['doctor_id'])),
 
                 date=request.session['date'],
-                pet=Pet.objects.get(id=request.session['pet_id'])
+                pet=Pet.objects.get(id=request.session['pet_id']),
+                description=request.session['description']
                 )
 
             appointment.save()

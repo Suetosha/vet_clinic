@@ -3,7 +3,7 @@
 
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>{{ title }}</title>
     <link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet" />
 </head>
@@ -13,10 +13,10 @@
         <div class="container d-flex flex-wrap">
           <ul class="nav me-auto">
             <li class="nav-item"><a href="{% url 'clinic:home' %}" class="nav-link link-dark px-2 active">Главная страница</a></li>
-            <li class="nav-item"><a href="{% url 'clinic:about' %}" class="nav-link link-dark px-2 active">О нас</a></li>
-            <li class="nav-item"><a href="{% url 'clinic:appointment' %}" class="nav-link link-dark px-2 active">Запись к врачу</a></li>
+            <li class="nav-item"><a href="{% url 'clinic:doctors' %}" class="nav-link link-dark px-2 active">Наши врачи</a></li>
+            <li class="nav-item"><a href="{% url 'clinic:appointment' %}" class="nav-link link-dark px-2 active">Запись на прием</a></li>
           </ul>
-          {% if user.is_authenticated %}
+          {% if request.user.is_authenticated %}
             <ul class="nav">
                 {% if request.user|has_group:"Doctor" %}
                     <li class="nav-item">

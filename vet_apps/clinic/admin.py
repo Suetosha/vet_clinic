@@ -1,21 +1,32 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django import forms
-from django.forms import ChoiceField
+from django.contrib.admin.widgets import AdminFileWidget
+from django.db import models
+from django.utils.html import format_html
+
 from vet_apps.clinic.models import Slot
+from django.contrib.auth.admin import UserAdmin
+from vet_apps.users.models import CustomUser
 
 
-class DoctorSlotsAdminForm(forms.ModelForm):
-    doctor = forms.ChoiceField(choices=[(doctor, doctor.username) for doctor in
-                                        User.objects.filter(groups__name='Doctor')])
-
-    class Meta:
-        model = Slot
-        fields = ('doctor', 'time')
-
+@admin.register(CustomUser)
+class UserAdmin(UserAdmin):
+    pass
+    list_display = ('username', 'first_name', 'last_name', 'image')
+    fieldsets = [
+        (
+            None,
+            {
+                "fields": ('username', 'first_name', 'last_name', 'groups', 'password', 'image', 'description'),
+            },
+        ),
+    ]
 
 @admin.register(Slot)
 class DoctorSlotsAdmin(admin.ModelAdmin):
     pass
+
+
+
 
 

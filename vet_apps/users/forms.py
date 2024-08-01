@@ -1,10 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from django.contrib.auth.models import User
 from django.forms import ModelForm, FileInput
 
-from vet_apps.users.models import Pet
+from vet_apps.users.models import Pet, CustomUser
 
 
 class UserLoginForm(AuthenticationForm):
@@ -18,17 +17,23 @@ class UserLoginForm(AuthenticationForm):
 class UserRegistrationForm(UserCreationForm):
 
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={
-        'class': "form-control", 'placeholder': "Введите имя пользователя"}))
+        'class': "form-control", 'placeholder': "Введите логин пользователя"}))
+
+    first_name = forms.CharField(label='Имя', widget=forms.TextInput(attrs={
+        'class': "form-control", 'placeholder': "Введите имя"}))
+
+    last_name = forms.CharField(label='Фамилия', widget=forms.TextInput(attrs={
+        'class': "form-control", 'placeholder': "Введите фамилию"}))
 
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={
         'class': "form-control", 'placeholder': "Введите пароль"}))
 
-    password2 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={
+    password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput(attrs={
         'class': "form-control", 'placeholder': "Повторите пароль"}))
 
     class Meta:
-        model = User
-        fields = ('username', 'password1', 'password2')
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'password1', 'password2')
 
 
 class PetRegistrationForm(ModelForm):

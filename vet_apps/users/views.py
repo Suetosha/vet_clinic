@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -11,7 +11,7 @@ from utils.mixins import TitleMixin, GroupRequiredMixin
 from vet_apps.clinic.models import Appointment
 
 from vet_apps.users.forms import UserLoginForm, UserRegistrationForm, PetRegistrationForm
-from vet_apps.users.models import Pet
+from vet_apps.users.models import Pet, CustomUser
 
 
 class UserLoginView(TitleMixin, LoginView):
@@ -43,7 +43,7 @@ class UserProfileView(TitleMixin, GroupRequiredMixin, TemplateView):
     group_required = 'Owner'
     template_name = 'users/profile.html'
     title = 'Профиль'
-    model = User
+    model = CustomUser
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -58,7 +58,7 @@ class DoctorProfileView(TitleMixin, GroupRequiredMixin, TemplateView):
     group_required = 'Doctor'
     template_name = 'users/doctors/profile.html'
     title = 'Профиль врача'
-    model = User
+    model = CustomUser
 
 
 class PetCreateView(TitleMixin, SuccessMessageMixin, CreateView):
