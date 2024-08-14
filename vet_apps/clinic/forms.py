@@ -21,6 +21,7 @@ class AppointmentForm(ModelForm):
 
             self.fields['description'] = forms.CharField(label='Описание проблемы',
                                                          widget=forms.Textarea(attrs={'class': ' form-control'}))
+
             self.fields['date'] = fields.DateField(label='Дата',
                                                    widget=forms.widgets
                                                    .DateInput(attrs={'type': 'date', 'class': ' form-control'}))

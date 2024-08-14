@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
-from utils.mixins import TitleMixin
+from utils.mixins import TitleMixin, GroupRequiredMixin
 from .forms import AppointmentForm, SlotForm
 from .models import Appointment, Slot
 
@@ -38,6 +38,28 @@ class DoctorInfoTemplateView(TitleMixin, TemplateView):
         return context
 
 
+class DoctorAppointmentsView(TitleMixin, GroupRequiredMixin, TemplateView):
+    template_name = 'users/doctors/doctor_appointments.html'
+    title = 'Записи к вам на прием'
+    group_required = 'Doctor'
+    model = CustomUser
+
+    def get(self, request, *args, **kwargs):
+        context = super(DoctorAppointmentsView, self).get_context_data(*args, **kwargs)
+
+        current_date = datetime.now().date() if 'selected_date' not in context \
+            else datetime.strptime(context['selected_date'], "%Y-%m-%d").date()
+
+        appointments = Appointment.objects.filter(slot__doctor=request.user.id, date=current_date)
+
+        context['previous_date'] = (current_date - timedelta(days=1))
+        context['next_date'] = (current_date + timedelta(days=1))
+        context['current_date'] = current_date
+        context['appointments'] = appointments
+
+        return self.render_to_response(context)
+
+
 class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
     template_name = 'clinic/appointment.html'
     title = 'Запись на прием'
@@ -51,12 +73,11 @@ class AppointmentCreateView(LoginRequiredMixin, TitleMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = AppointmentForm(request.POST)
-
         if form.is_valid():
             request.session['pet_id'] = form.cleaned_data['pet'].id
-            request.session['doctor_id'] = form.cleaned_data['doctor']
-            request.session['date'] = form.cleaned_data['date'].strftime('%Y-%m-%d')
-            request.session['description'] = form.cleaned_data['description']
+            request.session['doctor_id'] = request.POST['doctor']
+            request.session['date'] = request.POST['date']
+            request.session['description'] = request.POST['description']
             free_slots = get_free_slots(request.session['date'], request.session['doctor_id'])
 
             if free_slots:

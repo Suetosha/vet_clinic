@@ -1,17 +1,12 @@
 from django.contrib import admin
-from django import forms
-from django.contrib.admin.widgets import AdminFileWidget
-from django.db import models
-from django.utils.html import format_html
 
-from vet_apps.clinic.models import Slot
+from vet_apps.clinic.models import Slot, Appointment
 from django.contrib.auth.admin import UserAdmin
 from vet_apps.users.models import CustomUser
 
 
 @admin.register(CustomUser)
 class UserAdmin(UserAdmin):
-    pass
     list_display = ('username', 'first_name', 'last_name', 'image')
     fieldsets = [
         (
@@ -22,9 +17,17 @@ class UserAdmin(UserAdmin):
         ),
     ]
 
+
 @admin.register(Slot)
 class DoctorSlotsAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('slot', 'date', 'pet', 'description')
+
+
 
 
 

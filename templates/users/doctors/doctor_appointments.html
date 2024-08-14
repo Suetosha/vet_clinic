@@ -1,0 +1,56 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container text-center">
+
+     <div class="row mt-5">
+         <div class="col">
+             <a href="{% url 'clinic:doctor_appointments' previous_date %}">
+                <img src="/media/icon_svg/arrow-left.svg" alt="left_arrow" width="300" height="40">
+             </a>
+         </div>
+
+         <div class="col">
+             <h3>{{ current_date }}</h3>
+         </div>
+
+         <div class="col">
+            <a href="{% url 'clinic:doctor_appointments' next_date %}">
+                <img src="/media/icon_svg/arrow-right.svg" alt="right_arrow" width="300" height="40">
+            </a>
+        </div>
+     </div>
+
+
+
+    <div class="row mt-5">
+        {% if appointments %}
+        <h3>Записи к вам</h3>
+        <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th>Время</th>
+                      <th>Питомец</th>
+                      <th>Проблема</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.slot.time }}</td>
+                            <td>{{ appointment.pet }}</td>
+                            <td>{{ appointment.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        <h3>Записей нет</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

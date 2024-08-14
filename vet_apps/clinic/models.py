@@ -9,6 +9,9 @@ class Slot(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return f'{self.doctor} {self.time}'
+
 
 class Appointment(models.Model):
     slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
